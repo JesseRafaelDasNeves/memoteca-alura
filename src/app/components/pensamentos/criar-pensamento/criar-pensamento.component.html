@@ -2,25 +2,48 @@
   <header class="header">
     <h2>Adicione um<br />pensamento novo:</h2>
   </header>
-  <form>
+  <form [formGroup]="form">
     <label for="pensamento">Pensamento</label>
     <input
       type="textarea"
       class="input"
       id="pensamento"
-      name="pensamento"
+      formControlName="conteudo"
       placeholder="Digite o Pensamento"
-      [(ngModel)]="pensamento.conteudo"
     />
+    <div
+      class="mensagem__erro"
+      *ngIf="form.get('conteudo')?.errors && form.get('conteudo')?.touched"
+    >
+      Pensamento é obrigatório!
+    </div>
+
     <label for="autoria">Autoria ou fonte</label>
     <input
       type="text"
       class="input"
       id="autoria"
-      name="autoria"
+      formControlName="autoria"
       placeholder="Digite o autoria ou fonte"
-      [(ngModel)]="pensamento.autoria"
     />
+    <div
+      class="mensagem__erro"
+      *ngIf="form.get('autoria')?.errors?.['required'] && form.get('autoria')?.touched"
+    >
+      Autoria é obrigatória!
+    </div>
+    <div
+      class="mensagem__erro"
+      *ngIf="form.get('autoria')?.errors?.['minlength'] && form.get('autoria')?.touched"
+    >
+      Autoria é precisa ter no mínimo 3 caracteres!
+    </div>
+    <div
+      class="mensagem__erro"
+      *ngIf="form.get('autoria')?.errors?.['maiusculo'] && form.get('autoria')?.touched"
+    >
+      Autoria deve estar escrita em maiúsculo!
+    </div>
 
     <label for="modelo">Selecione o modelo do card:</label>
     <div class="container-radio">
@@ -30,8 +53,7 @@
             type="radio"
             id="modelo1"
             value="modelo1"
-            name="modelo-card"
-            [(ngModel)]="pensamento.modelo"
+            formControlName="modelo"
           />
           <div class="custom-radio"><span></span></div>
           <span>Modelo 1</span>
@@ -39,9 +61,9 @@
         Prévia:
         <div class="modelo modelo1 ff-roboto-mono">
           <img src="../../../../assets/images/modelo1.png" alt="Aspas azuis" />
-          <p class="conteudo">{{ pensamento.conteudo }}</p>
+          <p class="conteudo">{{ form.get("conteudo")?.value }}</p>
           <p class="autoria">
-            <b>{{ pensamento.autoria }}</b>
+            <b>{{ form.get("autoria")?.value }}</b>
           </p>
         </div>
       </div>
@@ -52,8 +74,7 @@
             type="radio"
             id="modelo2"
             value="modelo2"
-            name="modelo-card"
-            [(ngModel)]="pensamento.modelo"
+            formControlName="modelo"
           />
           <div class="custom-radio"><span></span></div>
           <span>Modelo 2</span>
@@ -64,9 +85,9 @@
             src="../../../../assets/images/modelo2.png"
             alt="Aspas azul claro"
           />
-          <p class="conteudo">{{ pensamento.conteudo }}</p>
+          <p class="conteudo">{{ form.get("conteudo")?.value }}</p>
           <p class="autoria">
-            <b>{{ pensamento.autoria }}</b>
+            <b>{{ form.get("autoria")?.value }}</b>
           </p>
         </div>
       </div>
@@ -77,8 +98,7 @@
             type="radio"
             id="modelo3"
             value="modelo3"
-            name="modelo-card"
-            [(ngModel)]="pensamento.modelo"
+            formControlName="modelo"
           />
           <div class="custom-radio"><span></span></div>
           <span>Modelo 3</span>
@@ -86,16 +106,22 @@
         Prévia:
         <div class="modelo modelo3 ff-roboto-mono">
           <img src="../../../../assets/images/modelo3.png" alt="Aspas verdes" />
-          <p class="conteudo">{{ pensamento.conteudo }}</p>
+          <p class="conteudo">{{ form.get("conteudo")?.value }}</p>
           <p class="autoria">
-            <b>{{ pensamento.autoria }}</b>
+            <b>{{ form.get("autoria")?.value }}</b>
           </p>
         </div>
       </div>
     </div>
 
     <div class="acoes">
-      <button (click)="criarPensamento()" class="botao">Salvar</button>
+      <button
+        (click)="criarPensamento()"
+        [disabled]="!form.valid"
+        [ngClass]="habilitarBotao()"
+      >
+        Salvar
+      </button>
       <button routerLink="/listarPensamento" class="botao">Cancelar</button>
     </div>
   </form>
